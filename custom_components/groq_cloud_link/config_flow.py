@@ -13,7 +13,7 @@ from homeassistant.config_entries import ConfigEntry, ConfigEntryBaseFlow, Confi
 from homeassistant.const import CONF_API_KEY, CONF_LLM_HASS_API, CONF_MODEL
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import llm
-from homeassistant.helpers.llm import API, AssistAPI, async_get_apis
+from homeassistant.helpers.llm import API, async_get_apis
 from homeassistant.helpers.selector import (
     SelectOptionDict,
     SelectSelector,
@@ -82,10 +82,9 @@ class GroqDeviceSettings:
     def set_apis(self, apis: list[API]) -> None:
         """Set the APIs selected."""
         self._llm_apis = [api.id for api in apis]
-        for api in apis:
-            if isinstance(api, AssistAPI):
-                self.conversation_features = ConversationEntityFeature.CONTROL
-                break
+        self.conversation_features = (
+            ConversationEntityFeature.CONTROL if llm.LLM_API_ASSIST in self._llm_apis else 0
+        )
 
     @staticmethod
     def unserialize(obj: MappingProxyType[str, Any], entry_id: str) -> GroqDeviceSettings:
