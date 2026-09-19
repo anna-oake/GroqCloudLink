@@ -40,7 +40,7 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.intent import IntentResponse
 from homeassistant.util.ulid import ulid_now
-from voluptuous_openapi import convert
+from probatio import to_openapi
 
 from .features import LLMFeatures
 
@@ -233,7 +233,7 @@ class GroqConversationEntity(ConversationEntity):
         tool_definitions: list[FunctionDefinition] = []
         if chat_log.llm_api is not None:
             for tool in chat_log.llm_api.tools:
-                parameters: FunctionParameters = convert(
+                parameters: FunctionParameters = to_openapi(
                     tool.parameters,
                     custom_serializer=chat_log.llm_api.custom_serializer,
                 )
